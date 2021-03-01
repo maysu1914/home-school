@@ -1,0 +1,228 @@
+{
+  "Pazartesi": {
+    "1": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "09:10",
+      "bitis": "09:40"
+    },
+    "2": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "09:50",
+      "bitis": "10:20"
+    },
+    "3": {
+      "ders": "Peygamberimizin Hayatı",
+      "hoca": "Y.MUT",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "4": {
+      "ders": "Peygamberimizin Hayatı",
+      "hoca": "Y.MUT",
+      "baslangic": "11:10",
+      "bitis": "11:40"
+    },
+    "5": {
+      "ders": "Kur'an-ı Kerim",
+      "hoca": "A.ÖZV",
+      "baslangic": "11:50",
+      "bitis": "12:20"
+    },
+    "6": {
+      "ders": "Kur'an-ı Kerim",
+      "hoca": "A.ÖZV",
+      "baslangic": "12:30",
+      "bitis": "13:00"
+    },
+    "7": {
+      "ders": "Sosyal",
+      "hoca": "Z.ŞKR",
+      "baslangic": "13:10",
+      "bitis": "13:40"
+    }
+  },
+  "Salı": {
+    "1": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "09:10",
+      "bitis": "09:40"
+    },
+    "2": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "09:50",
+      "bitis": "10:20"
+    },
+    "3": {
+      "ders": "Matematik",
+      "hoca": "R.KSE",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "4": {
+      "ders": "Arapça",
+      "hoca": "E.KRT",
+      "baslangic": "11:10",
+      "bitis": "11:40"
+    },
+    "5": {
+      "ders": "Arapça",
+      "hoca": "E.KRT",
+      "baslangic": "11:50",
+      "bitis": "12:20"
+    },
+    "6": {
+      "ders": "Matematik",
+      "hoca": "R.KSE",
+      "baslangic": "12:30",
+      "bitis": "13:00"
+    },
+    "7": {
+      "ders": "Matematik",
+      "hoca": "R.KSE",
+      "baslangic": "13:10",
+      "bitis": "13:40"
+    }
+  },
+  "Çarşamba": {
+    "1": {
+      "ders": "Spor",
+      "hoca": "Ş.AKR",
+      "baslangic": "09:10",
+      "bitis": "09:40"
+    },
+    "2": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "09:50",
+      "bitis": "10:20"
+    },
+    "3": {
+      "ders": "Fen",
+      "hoca": "C.KRT",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "4": {
+      "ders": "Fen",
+      "hoca": "C.KRT",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "5": {
+      "ders": "Sosyal",
+      "hoca": "Z.ŞKR",
+      "baslangic": "11:50",
+      "bitis": "12:20"
+    },
+    "6": {
+      "ders": "Sosyal",
+      "hoca": "Z.ŞKR",
+      "baslangic": "11:50",
+      "bitis": "12:20"
+    },
+    "7": {
+      "ders": "Türkçe",
+      "hoca": "H.YLM",
+      "baslangic": "13:10",
+      "bitis": "13:40"
+    },
+    "8": {
+      "ders": "Türkçe",
+      "hoca": "H.YLM",
+      "baslangic": "13:50",
+      "bitis": "14:20"
+    }
+  },
+  "Perşembe": {
+    "1": {
+      "ders": "Türkçe",
+      "hoca": "H.YLM",
+      "baslangic": "09:10",
+      "bitis": "09:40"
+    },
+    "2": {
+      "ders": "Türkçe",
+      "hoca": "H.YLM",
+      "baslangic": "09:50",
+      "bitis": "10:20"
+    },
+    "3": {
+      "ders": "Matematik",
+      "hoca": "R.KSE",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "4": {
+      "ders": "Matematik",
+      "hoca": "R.KSE",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "5": {
+      "ders": "Matematik",
+      "hoca": "R.KSE",
+      "baslangic": "11:50",
+      "bitis": "12:20"
+    },
+    "6": {
+      "ders": "Fen",
+      "hoca": "C.KRT",
+      "baslangic": "11:50",
+      "bitis": "12:20"
+    },
+    "7": {
+      "ders": "Fen",
+      "hoca": "C.KRT",
+      "baslangic": "13:10",
+      "bitis": "13:40"
+    }
+  },
+  "Cuma": {
+    "1": {
+      "ders": "Türkçe",
+      "hoca": "H.YLM",
+      "baslangic": "09:10",
+      "bitis": "09:40"
+    },
+    "2": {
+      "ders": "Türkçe",
+      "hoca": "H.YLM",
+      "baslangic": "09:50",
+      "bitis": "10:20"
+    },
+    "3": {
+      "ders": "Din Bilgisi",
+      "hoca": "Y.MUT",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "4": {
+      "ders": "Din Bilgisi",
+      "hoca": "Y.MUT",
+      "baslangic": "10:30",
+      "bitis": "11:00"
+    },
+    "5": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "11:50",
+      "bitis": "12:20"
+    },
+    "6": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "14:30",
+      "bitis": "15:00"
+    },
+    "7": {
+      "ders": "İngilizce",
+      "hoca": "Ş.KCG",
+      "baslangic": "15:10",
+      "bitis": "15:40"
+    }
+  }
+}

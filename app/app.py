@@ -45,7 +45,8 @@ class HomeSchool:
             start = datetime.datetime.strptime(today + ':' + value['baslangic'], '%Y:%m:%d:%H:%M')
             before_start = start - datetime.timedelta(0, 0, 0, 0, 3)
             finish = datetime.datetime.strptime(today + ':' + value['bitis'], '%Y:%m:%d:%H:%M')
-            self.alarms.append({'type': 'start', 'lesson': key, 'time': before_start, 'status': False})
+            self.alarms.append({'type': 'before_start', 'lesson': key, 'time': before_start, 'status': False})
+            self.alarms.append({'type': 'start', 'lesson': key, 'time': start, 'status': False})
             self.alarms.append({'type': 'finish', 'lesson': key, 'time': finish, 'status': False})
 
     def set_lesson_times(self):
@@ -103,19 +104,23 @@ class HomeSchool:
     def call_alarm(self, lesson, type):
         """
         Calling alarm
+        :param type: Alarm type
         :param lesson: Data of trigger lesson from syllabus
         :return:
         """
         vlc.MediaPlayer(self.alarm_path).play()
-
-        if type == 'start':
+        if type == 'before_start':
             self.toaster.show_toast(title="Home School",
                                     msg="%s dersi yaklaşıyor. %s" % (lesson['ders'], lesson['baslangic']),
                                     duration=180, threaded=True)
+        elif type == 'start':
+            self.toaster.show_toast(title="Home School",
+                                    msg="%s dersin başladı." % (lesson['ders']),
+                                    duration=10, threaded=True)
         else:
             self.toaster.show_toast(title="Home School",
                                     msg="%s dersin bitti! %s" % (lesson['ders'], lesson['bitis']),
-                                    duration=60, threaded=True)
+                                    duration=30, threaded=True)
 
     def on_lesson(self):
         """

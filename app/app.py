@@ -2,7 +2,6 @@ import datetime
 import locale
 import threading
 import vlc
-import pygetwindow as gw
 
 from win10toast import ToastNotifier
 
@@ -123,22 +122,4 @@ class HomeSchool:
         Do something when the lesson is ongoing.
         :return:
         """
-        zoom_window = gw.getWindowsWithTitle('Zoom')[0] if gw.getWindowsWithTitle('Zoom') else None
-        meeting_window = gw.getWindowsWithTitle('Zoom Meeting')[0] if gw.getWindowsWithTitle('Zoom Meeting') else None
-        if meeting_window:
-            if not meeting_window.isMaximized:
-                meeting_window.maximize()
-            if not meeting_window.isActive:
-                try:
-                    meeting_window.activate()
-                except gw.PyGetWindowException as e:
-                    pass
-        elif zoom_window:
-            if not zoom_window.isMaximized:
-                zoom_window.maximize()
-            if not zoom_window.isActive:
-                try:
-                    zoom_window.activate()
-                except gw.PyGetWindowException as e:
-                    pass
-        # print('on lesson')
+        pass

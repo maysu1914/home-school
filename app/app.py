@@ -111,16 +111,16 @@ class HomeSchool:
         vlc.MediaPlayer(self.alarm_path).play()
         if type == 'before_start':
             self.toaster.show_toast(title="Home School",
-                                    msg="%s dersi yaklaşıyor. %s" % (lesson['ders'], lesson['baslangic']),
-                                    duration=180, threaded=True)
+                                    msg="%s dersi yaklaşıyor. %s\nKitaplarınızı hazırlayın." % (lesson['ders'], lesson['baslangic']),
+                                    duration=120, threaded=True)
         elif type == 'start':
             self.toaster.show_toast(title="Home School",
-                                    msg="%s dersin başladı." % (lesson['ders']),
-                                    duration=10, threaded=True)
+                                    msg="%s dersiniz başladı." % (lesson['ders']),
+                                    duration=60, threaded=True)
         else:
             self.toaster.show_toast(title="Home School",
-                                    msg="%s dersin bitti! %s" % (lesson['ders'], lesson['bitis']),
-                                    duration=30, threaded=True)
+                                    msg="%s dersiniz bitti. %s" % (lesson['ders'], lesson['bitis']),
+                                    duration=60, threaded=True)
 
     def on_lesson(self):
         """

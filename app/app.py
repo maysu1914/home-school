@@ -12,8 +12,9 @@ class HomeSchool:
     """
     Alarm when the lesson approaches and ends.
     """
+    title = "Home School"
 
-    def __init__(self, ders_programi_path):
+    def __init__(self, ders_programi_path, language="tr.UTF-8"):
         """
         Set language,
         Read syllabus from JSON file,
@@ -22,7 +23,7 @@ class HomeSchool:
         Set lesson clocks,
         :param ders_programi_path: JSON file path of the syllabus
         """
-        locale.setlocale(locale.LC_ALL, "tr.UTF-8")
+        locale.setlocale(locale.LC_ALL, language)
         self.alarm_path = "resources/meb_okul_zili.mp3"
         self.toaster = ToastNotifier()
         self.ders_programi = get_dict_from_json_file(ders_programi_path)
@@ -41,10 +42,9 @@ class HomeSchool:
         :return:
         """
         for key, value in self.ders_programi[self.today].items():
-            today = datetime.datetime.now().strftime("%Y:%m:%d")
-            start = datetime.datetime.strptime(today + ':' + value['baslangic'], '%Y:%m:%d:%H:%M')
+            start = get_updated_now_by_given_date(value['baslangic'], '%H:%M')
             before_start = start - datetime.timedelta(0, 0, 0, 0, 3)
-            finish = datetime.datetime.strptime(today + ':' + value['bitis'], '%Y:%m:%d:%H:%M')
+            finish = get_updated_now_by_given_date(value['bitis'], '%H:%M')
             self.alarms.append({'type': 'before_start', 'lesson': key, 'time': before_start, 'status': False})
             self.alarms.append({'type': 'start', 'lesson': key, 'time': start, 'status': False})
             self.alarms.append({'type': 'finish', 'lesson': key, 'time': finish, 'status': False})
@@ -56,9 +56,8 @@ class HomeSchool:
         :return:
         """
         for key, value in self.ders_programi[self.today].items():
-            today = datetime.datetime.now().strftime("%Y:%m:%d")
-            start = datetime.datetime.strptime(today + ':' + value['baslangic'], '%Y:%m:%d:%H:%M')
-            finish = datetime.datetime.strptime(today + ':' + value['bitis'], '%Y:%m:%d:%H:%M')
+            start = get_updated_now_by_given_date(value['baslangic'], '%H:%M')
+            finish = get_updated_now_by_given_date(value['bitis'], '%H:%M')
             self.lesson_times.append((start, finish))
 
     def run(self):
@@ -110,15 +109,16 @@ class HomeSchool:
         """
         vlc.MediaPlayer(self.alarm_path).play()
         if type == 'before_start':
-            self.toaster.show_toast(title="Home School",
-                                    msg="%s dersi yaklaşıyor. %s\nKitaplarınızı hazırlayın." % (lesson['ders'], lesson['baslangic']),
+            self.toaster.show_toast(title=self.title,
+                                    msg="%s dersiniz yaklaşıyor. %s\nKitaplarınızı hazırlayın." % (
+                                        lesson['ders'], lesson['baslangic']),
                                     duration=120, threaded=True)
         elif type == 'start':
-            self.toaster.show_toast(title="Home School",
+            self.toaster.show_toast(title=self.title,
                                     msg="%s dersiniz başladı." % (lesson['ders']),
                                     duration=60, threaded=True)
         else:
-            self.toaster.show_toast(title="Home School",
+            self.toaster.show_toast(title=self.title,
                                     msg="%s dersiniz bitti. %s" % (lesson['ders'], lesson['bitis']),
                                     duration=60, threaded=True)
 

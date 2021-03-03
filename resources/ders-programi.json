@@ -109,8 +109,8 @@
     "4": {
       "ders": "Fen",
       "hoca": "C.KRT",
-      "baslangic": "10:30",
-      "bitis": "11:00"
+      "baslangic": "11:10",
+      "bitis": "11:40"
     },
     "5": {
       "ders": "Sosyal",
@@ -159,8 +159,8 @@
     "4": {
       "ders": "Matematik",
       "hoca": "R.KSE",
-      "baslangic": "10:30",
-      "bitis": "11:00"
+      "baslangic": "11:10",
+      "bitis": "11:40"
     },
     "5": {
       "ders": "Matematik",
@@ -171,8 +171,8 @@
     "6": {
       "ders": "Fen",
       "hoca": "C.KRT",
-      "baslangic": "11:50",
-      "bitis": "12:20"
+      "baslangic": "12:30",
+      "bitis": "13:00"
     },
     "7": {
       "ders": "Fen",
@@ -203,8 +203,8 @@
     "4": {
       "ders": "Din Bilgisi",
       "hoca": "Y.MUT",
-      "baslangic": "10:30",
-      "bitis": "11:00"
+      "baslangic": "11:10",
+      "bitis": "11:40"
     },
     "5": {
       "ders": "İngilizce",

@@ -2,6 +2,7 @@ import datetime
 import json
 
 import pythoncom
+import win32con
 import wmi
 
 
@@ -49,13 +50,24 @@ def get_updated_now_by_given_date(given_string_values, values_format):
     return updated_date
 
 
-def kill_process(processes_to_kill):
+def kill_process(processes_to_kill, trigger_process=None):
+    """
+    A process killer. It takes 1 required and 1 optional argument.
+    Processes to kill is a must and should be a list.
+    The trigger process is optional, when it exists the whole operation depends on it.
+    :param processes_to_kill:
+    :param trigger_process:
+    :return:
+    """
     killed = []
     not_killed = []
 
     # Initializing the wmi constructor
     pythoncom.CoInitialize()
     f = wmi.WMI()
+    if trigger_process and not f.Win32_Process(Name=trigger_process):
+        print("'%s' trigger process not found." % trigger_process)
+        return
 
     for process_to_kill in processes_to_kill:
         # Iterating through all the running processes
@@ -64,6 +76,29 @@ def kill_process(processes_to_kill):
             killed.append(process.Name)
 
     if killed:
-        return 'Processes killed: %s' % (', '.join(killed))
+        print('Processes killed: %s' % (', '.join(killed)))
     else:
-        return 'No process killed.'
+        print('No processes killed.')
+
+    return
+
+
+def start_process(processes_to_start):
+    # Initializing the wmi constructor
+    pythoncom.CoInitialize()
+    f = wmi.WMI()
+
+    for process, path in processes_to_start.items():
+        if not f.Win32_Process(Name=process):
+            process_startup = f.Win32_ProcessStartup.new(ShowWindow=win32con.SW_SHOWNORMAL)
+            process_id, result = f.Win32_Process.Create(
+                CommandLine=path,
+                ProcessStartupInformation=process_startup
+            )
+            if result == 0:
+                print("Process started successfully: %d" % process_id)
+            else:
+                print("Problem creating process: %d" % result)
+        else:
+            print('%s is already running.' % process)
+    return

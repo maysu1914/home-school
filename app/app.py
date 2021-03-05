@@ -101,6 +101,9 @@ class HomeSchool:
             if lesson_time[0] < datetime.datetime.now() < lesson_time[1]:
                 # print(self.ders_programi[self.today][str(index)])
                 self.on_lesson()
+                return
+        self.off_lesson()
+        return
 
     def call_alarm(self, lesson, type):
         """
@@ -129,10 +132,22 @@ class HomeSchool:
         Do something when the lesson is ongoing.
         :return:
         """
-        processes_to_kill = []
-        print('on lesson')
+        # print('on lesson')
+        trigger_process = 'CptHost.exe'  # Zoom meeting exe
+        processes_to_kill = ['firefox.exe', 'chrome.exe', 'msedge.exe']
         if not self.wmi_thread:
-            self.wmi_thread = ThreadPoolExecutor().submit(kill_process, processes_to_kill)
+            self.wmi_thread = ThreadPoolExecutor().submit(kill_process, processes_to_kill, trigger_process)
         elif not self.wmi_thread.running():
-            print(self.wmi_thread.result())
+            self.wmi_thread = None
+
+    def off_lesson(self):
+        """
+        Do something when no lesson.
+        :return:
+        """
+        # print('out lesson')
+        processes = {}  # process name and path
+        if not self.wmi_thread:
+            self.wmi_thread = ThreadPoolExecutor().submit(start_process, processes)
+        elif not self.wmi_thread.running():
             self.wmi_thread = None

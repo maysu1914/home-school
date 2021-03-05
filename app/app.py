@@ -1,8 +1,9 @@
 import datetime
 import locale
 import threading
-import vlc
+from concurrent.futures.thread import ThreadPoolExecutor
 
+import vlc
 from win10toast import ToastNotifier
 
 from app.utils import *
@@ -33,6 +34,7 @@ class HomeSchool:
         self.set_alarms()
         self.set_lesson_times()
         self.interval = 0.5
+        self.wmi_thread = None
 
     def set_alarms(self):
         """
@@ -127,4 +129,10 @@ class HomeSchool:
         Do something when the lesson is ongoing.
         :return:
         """
-        pass
+        processes_to_kill = []
+        print('on lesson')
+        if not self.wmi_thread:
+            self.wmi_thread = ThreadPoolExecutor().submit(kill_process, processes_to_kill)
+        elif not self.wmi_thread.running():
+            print(self.wmi_thread.result())
+            self.wmi_thread = None

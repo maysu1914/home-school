@@ -2,3 +2,4 @@ pypiwin32==223
 python-vlc==3.0.11115
 pywin32==300
 win10toast==0.9
+WMI==1.5.1

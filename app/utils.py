@@ -1,6 +1,9 @@
 import datetime
 import json
 
+import pythoncom
+import wmi
+
 
 def get_dict_from_json_file(path):
     """
@@ -44,3 +47,23 @@ def get_updated_now_by_given_date(given_string_values, values_format):
     str_now = datetime.datetime.now().strftime(options)
     updated_date = datetime.datetime.strptime(given_string_values + str_now, values_format + options)
     return updated_date
+
+
+def kill_process(processes_to_kill):
+    killed = []
+    not_killed = []
+
+    # Initializing the wmi constructor
+    pythoncom.CoInitialize()
+    f = wmi.WMI()
+
+    for process_to_kill in processes_to_kill:
+        # Iterating through all the running processes
+        for process in f.Win32_Process(Name=process_to_kill):
+            process.Terminate()
+            killed.append(process.Name)
+
+    if killed:
+        return 'Processes killed: %s' % (', '.join(killed))
+    else:
+        return 'No process killed.'

@@ -31,18 +31,29 @@ def get_updated_now_by_given_date(given_string_values, values_format):
     """
     # possible options: Year(2020,21), Month(01,Jan,January), Hour(22,10 pm)
     options = ['%Y%y', '%m%b%B', '%d', '%H%I', '%p', '%M', '%S', '%f']
+
+    # check if given format values are exist in options
     for _format in values_format.split('%'):
         if _format:
-            for index, option in zip(range(len(options)), options):
+            for index, option in enumerate(options, start=0):
                 check_format = '%' + _format[0]
                 if check_format in option:
+                    # overwrite given allowed format to option element
                     options[index] = check_format
+
     options = ''.join(options)
 
+    # split by %, reverse, and loop given format string
+    # CAUTION: Assumed to given format is from big to small,
+    # start to check from small, and exclude much smaller
+    # options to make them zero while getting now date
     for _format in ''.join(values_format.split('%'))[::-1]:
+        # if multiple % is exist, element may be empty string
         if _format:
             check_format = '%' + _format[0]
             if check_format in options:
+                # remove given format and smaller formats from options
+                # to get zero valued now object
                 options = options.replace(options[options.index(check_format):], '')
 
     str_now = datetime.datetime.now().strftime(options)
@@ -70,7 +81,6 @@ def kill_process(processes_to_kill, trigger_process=None):
         return
 
     for process_to_kill in processes_to_kill:
-        # Iterating through all the running processes
         for process in f.Win32_Process(Name=process_to_kill):
             process.Terminate()
             killed.append(process.Name)

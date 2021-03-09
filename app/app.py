@@ -3,7 +3,7 @@ import locale
 import threading
 from concurrent.futures.thread import ThreadPoolExecutor
 
-import vlc
+# import vlc
 from win10toast import ToastNotifier
 
 from app.utils import *
@@ -25,7 +25,7 @@ class HomeSchool:
         :param ders_programi_path: JSON file path of the syllabus
         """
         locale.setlocale(locale.LC_ALL, language)
-        self.alarm_path = "resources/meb_okul_zili.mp3"
+        # self.alarm_path = "resources/meb_okul_zili.mp3"
         self.toaster = ToastNotifier()
         self.ders_programi = get_dict_from_json_file(ders_programi_path)
         self.today = datetime.datetime.today().strftime("%A")
@@ -112,20 +112,20 @@ class HomeSchool:
         :param lesson: Data of trigger lesson from syllabus
         :return:
         """
-        vlc.MediaPlayer(self.alarm_path).play()
+        # vlc.MediaPlayer(self.alarm_path).play()
         if type == 'before_start':
             self.toaster.show_toast(title=self.title,
                                     msg="%s dersiniz yaklaşıyor. %s\nKitaplarınızı hazırlayın." % (
                                         lesson['ders'], lesson['baslangic']),
-                                    duration=120, threaded=True)
+                                    duration=30, threaded=True)
         elif type == 'start':
             self.toaster.show_toast(title=self.title,
                                     msg="%s dersiniz başladı." % (lesson['ders']),
-                                    duration=60, threaded=True)
+                                    duration=30, threaded=True)
         else:
             self.toaster.show_toast(title=self.title,
                                     msg="%s dersiniz bitti. %s" % (lesson['ders'], lesson['bitis']),
-                                    duration=60, threaded=True)
+                                    duration=30, threaded=True)
 
     def on_lesson(self):
         """
@@ -134,7 +134,7 @@ class HomeSchool:
         """
         # print('on lesson')
         trigger_process = 'CptHost.exe'  # Zoom meeting exe
-        processes_to_kill = ['firefox.exe', 'chrome.exe', 'msedge.exe']
+        processes_to_kill = ['firefox.exe']
         if not self.wmi_thread:
             self.wmi_thread = ThreadPoolExecutor().submit(kill_process, processes_to_kill, trigger_process)
         elif not self.wmi_thread.running():
@@ -145,9 +145,9 @@ class HomeSchool:
         Do something when no lesson.
         :return:
         """
-        # print('out lesson')
-        processes = {}  # process name and path
-        if not self.wmi_thread:
-            self.wmi_thread = ThreadPoolExecutor().submit(start_process, processes)
-        elif not self.wmi_thread.running():
-            self.wmi_thread = None
+        print('out lesson')
+        # processes = {}  # process name and path
+        # if not self.wmi_thread:
+        #     self.wmi_thread = ThreadPoolExecutor().submit(start_process, processes)
+        # elif not self.wmi_thread.running():
+        #     self.wmi_thread = None

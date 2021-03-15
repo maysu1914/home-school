@@ -50,27 +50,21 @@ class HomeSchool:
         sets the last lesson data to individual variable
         :return:
         """
-        prev_lesson = {}
         for key, value in self.ders_programi.items():
             if value['baslangic'] < datetime.datetime.now() < value['bitis']:
                 self.ders_programi[key]['durum'] = 'started'
                 self.last_lesson = value
                 break
-            elif prev_lesson and datetime.datetime.now() > prev_lesson['bitis']:
-                self.last_lesson = prev_lesson
-            prev_lesson = value
 
     def get_next_lesson(self):
         """
         returns the next lesson data if exist
         :return:
         """
-        if self.last_lesson:
-            next_lesson_id = str(self.last_lesson['id'] + 1)
-            if next_lesson_id in self.ders_programi:
-                return self.ders_programi[next_lesson_id]
-            else:
-                return None
+        for key, value in self.ders_programi.items():
+            if datetime.datetime.now() < value['baslangic']:
+                return value
+        return None
 
     def run(self):
         """

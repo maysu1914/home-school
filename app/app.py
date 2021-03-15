@@ -1,6 +1,7 @@
 import locale
 import threading
 from concurrent.futures.thread import ThreadPoolExecutor
+from string import Template
 
 from win10toast import ToastNotifier
 
@@ -12,6 +13,12 @@ class HomeSchool:
     Alarm when the lesson approaches and ends.
     """
     title = "Ev Okulu"
+    notify_near_template = Template("${ders} dersiniz yaklaşıyor. ${baslangic}\nKitaplarınızı hazırlayın.")
+    notify_started_template = Template("${ders} dersiniz başladı.")
+    notify_finished_template = Template("${ders} dersiniz bitti.")
+    on_lesson_template = Template("${ders} (${hoca}) dersiniz devam ediyor.")
+    off_lesson_template = Template("Tenefüs vakti. Sonraki ders ${ders} (${hoca}).")
+    no_lesson_template = Template("Bugün başka dersiniz bulunmamaktadır.")
 
     def __init__(self, ders_programi_path, language="tr.UTF-8"):
         """
@@ -23,10 +30,13 @@ class HomeSchool:
         :param ders_programi_path: JSON file path of the syllabus
         """
         locale.setlocale(locale.LC_ALL, language)
-        self.today = datetime.datetime.today().strftime("%A")
         self.toaster = ToastNotifier()
+        self.executor = ThreadPoolExecutor()
+
         self.interval = 0.5
         self.notification_duration = 30
+
+        self.today = datetime.datetime.today().strftime("%A")
         self.ders_programi = self.get_today_syllabus(ders_programi_path)
         self.last_lesson_time = max([value['bitis'] for key, value in self.ders_programi.items()])
 
@@ -80,10 +90,10 @@ class HomeSchool:
         Logic processes
         :return:
         """
-        self.alarm_control()
+        self.notification_control()
         self.lesson_control()
 
-    def alarm_control(self):
+    def notification_control(self):
         """
         Check alarm conditions
         :return:
@@ -93,19 +103,19 @@ class HomeSchool:
                 before_start = value['baslangic'] - datetime.timedelta(0, 0, 0, 0, 3)
                 if before_start < datetime.datetime.now() < value['baslangic']:
                     self.ders_programi[key]['durum'] = 'near'
-                    self.call_alarm(value['durum'], lesson=value)
+                    self.send_notification(value['durum'], lesson=value)
             elif value['durum'] == 'near':
                 time_difference = abs((datetime.datetime.now() - value['baslangic']).total_seconds())
                 if time_difference < 2:
                     self.ders_programi[key]['durum'] = 'started'
                     self.last_lesson = value
-                    self.call_alarm(value['durum'])
+                    self.send_notification(value['durum'])
             elif value['durum'] == 'started':
                 time_difference = abs((datetime.datetime.now() - value['bitis']).total_seconds())
                 if time_difference < 2:
                     self.ders_programi[key]['durum'] = 'finished'
                     self.last_lesson = value
-                    self.call_alarm(value['durum'])
+                    self.send_notification(value['durum'])
 
     def lesson_control(self):
         """
@@ -119,39 +129,42 @@ class HomeSchool:
         self.off_lesson()
         return
 
-    def call_alarm(self, type, lesson=None):
+    def send_notification(self, type, lesson=None):
         """
-        Calling alarm
+        Sends notification
         :param lesson:
         :param type: Alarm type
         :return:
         """
-        # we don't use built-in threaded paramter of toaster,
-        # because it has protection to multi notification in the same time
-        if type == 'near':
-            ThreadPoolExecutor().submit(self.toaster._show_toast, title=self.title,
-                                        msg="%s dersiniz yaklaşıyor. %s\nKitaplarınızı hazırlayın." % (
-                                            lesson['ders'], lesson['baslangic'].strftime('%H:%M')),
-                                        duration=self.notification_duration, icon_path=None)
-        elif type == 'started':
-            ThreadPoolExecutor().submit(self.toaster._show_toast, title=self.title,
-                                        msg="%s dersiniz başladı." % self.last_lesson['ders'],
-                                        duration=self.notification_duration, icon_path=None)
+        if lesson:
+            data = {'ders': lesson['ders'], 'baslangic': lesson['baslangic'].strftime('%H:%M')}
         else:
-            ThreadPoolExecutor().submit(self.toaster._show_toast, title=self.title,
-                                        msg="%s dersiniz bitti." % self.last_lesson['ders'],
-                                        duration=self.notification_duration, icon_path=None)
+            data = {'ders': self.last_lesson['ders'], 'baslangic': self.last_lesson['baslangic'].strftime('%H:%M')}
+
+        toast_messages = {'near': self.notify_near_template.substitute(data),
+                          'started': self.notify_started_template.substitute(data),
+                          'finished': self.notify_finished_template.substitute(data)}
+
+        # we don't use built-in threaded parameter of toaster,
+        # because it has protection to multi notification at in the same time
+        # thus we create our own thread
+        self.executor.submit(self.toaster._show_toast, title=self.title, msg=toast_messages[type],
+                             duration=self.notification_duration, icon_path=None)
 
     def on_lesson(self):
         """
         Do something when the lesson is ongoing.
         :return:
         """
-        print('on lesson')
         trigger_process = 'CptHost.exe'  # Zoom meeting exe
         processes_to_kill = ['firefox.exe']
+
+        if self.last_lesson:
+            data = {'ders': self.last_lesson['ders'], 'hoca': self.last_lesson['hoca']}
+            print(self.on_lesson_template.safe_substitute(data))
+
         if not self.wmi_thread:
-            self.wmi_thread = ThreadPoolExecutor().submit(kill_process, processes_to_kill, trigger_process)
+            self.wmi_thread = self.executor.submit(kill_process, processes_to_kill, trigger_process)
         elif not self.wmi_thread.running():
             self.wmi_thread = None
 
@@ -161,4 +174,8 @@ class HomeSchool:
         :return:
         """
         next_lesson = self.get_next_lesson()
-        print('out lesson', next_lesson['ders'] if next_lesson else 'There no upcoming lesson')
+        if next_lesson:
+            data = {'ders': next_lesson['ders'], 'hoca': next_lesson['hoca']}
+            print(self.off_lesson_template.safe_substitute(data))
+        else:
+            print(self.no_lesson_template.safe_substitute())

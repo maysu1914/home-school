@@ -77,7 +77,7 @@ def kill_process(processes_to_kill, trigger_process=None):
     pythoncom.CoInitialize()
     f = wmi.WMI()
     if trigger_process and not f.Win32_Process(Name=trigger_process):
-        print("'%s' trigger process not found." % trigger_process)
+        # print("'%s' trigger process not found." % trigger_process)
         return
 
     for process_to_kill in processes_to_kill:
@@ -86,9 +86,11 @@ def kill_process(processes_to_kill, trigger_process=None):
             killed.append(process.Name)
 
     if killed:
-        print('Processes killed: %s' % (', '.join(killed)))
+        # print('Processes killed: %s' % (', '.join(killed)))
+        pass
     else:
-        print('No processes killed.')
+        # print('No processes killed.')
+        pass
 
     return
 

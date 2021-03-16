@@ -17,7 +17,7 @@ class HomeSchool:
     notify_started_template = Template("${ders} dersiniz başladı.")
     notify_finished_template = Template("${ders} dersiniz bitti.")
     on_lesson_template = Template("${ders} (${hoca}) dersiniz devam ediyor.")
-    off_lesson_template = Template("Tenefüs vakti. Sonraki ders ${ders} (${hoca}).")
+    off_lesson_template = Template("Tenefüs vakti. Sonraki ders ${ders} (${hoca}). ${baslangic}")
     no_lesson_template = Template("Bugün başka dersiniz bulunmamaktadır.")
 
     def __init__(self, ders_programi_path, language="tr.UTF-8"):
@@ -129,11 +129,11 @@ class HomeSchool:
         self.off_lesson()
         return
 
-    def send_notification(self, type, lesson=None):
+    def send_notification(self, msg_type, lesson=None):
         """
         Sends notification
         :param lesson:
-        :param type: Alarm type
+        :param msg_type: Alarm type
         :return:
         """
         if lesson:
@@ -148,7 +148,7 @@ class HomeSchool:
         # we don't use built-in threaded parameter of toaster,
         # because it has protection to multi notification at in the same time
         # thus we create our own thread
-        self.executor.submit(self.toaster._show_toast, title=self.title, msg=toast_messages[type],
+        self.executor.submit(self.toaster._show_toast, title=self.title, msg=toast_messages[msg_type],
                              duration=self.notification_duration, icon_path=None)
 
     def on_lesson(self):
@@ -175,7 +175,8 @@ class HomeSchool:
         """
         next_lesson = self.get_next_lesson()
         if next_lesson:
-            data = {'ders': next_lesson['ders'], 'hoca': next_lesson['hoca']}
+            data = {'ders': next_lesson['ders'], 'hoca': next_lesson['hoca'],
+                    'baslangic': next_lesson['baslangic'].time()}
             print(self.off_lesson_template.safe_substitute(data))
         else:
             print(self.no_lesson_template.safe_substitute())

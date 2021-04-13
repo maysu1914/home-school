@@ -19,6 +19,7 @@ class HomeSchool:
     on_lesson_template = Template("${ders} (${hoca}) dersiniz devam ediyor.")
     off_lesson_template = Template("Tenefüs vakti. Sonraki ders ${ders} (${hoca}). ${baslangic}")
     no_lesson_template = Template("Bugün başka dersiniz bulunmamaktadır.")
+    syllabus_title_template = Template("${tarih} ${gun} ders programı:")
     syllabus_lesson_template = Template("${sayi}. [${baslangic} - ${bitis}] ${ders} (${hoca})")
 
     def __init__(self, ders_programi_path, language="tr.UTF-8"):
@@ -37,7 +38,8 @@ class HomeSchool:
         self.interval = 0.5
         self.notification_duration = 30
 
-        self.today = datetime.datetime.today().strftime("%A")
+        self.today = datetime.datetime.today()
+        self.day_name = self.today.strftime("%A")
         self.ders_programi = self.get_today_syllabus(ders_programi_path)
         self.last_lesson_time = max([value['bitis'] for key, value in self.ders_programi.items()])
 
@@ -48,7 +50,7 @@ class HomeSchool:
         self.show_syllabus()
 
     def show_syllabus(self):
-        print("Ders programı:")
+        print(self.syllabus_title_template.substitute({'gun': self.day_name, 'tarih': self.today.strftime("%d/%m/%Y")}))
         for sayi, lesson in self.ders_programi.items():
             data = {
                 'sayi': sayi,
@@ -58,10 +60,10 @@ class HomeSchool:
                 'hoca': lesson['hoca'],
             }
             print(self.syllabus_lesson_template.substitute(data))
-        print('-'*40)
+        print('-' * 40)
 
     def get_today_syllabus(self, ders_programi_path):
-        syllabus = get_dict_from_json_file(ders_programi_path)[self.today]
+        syllabus = get_dict_from_json_file(ders_programi_path)[self.day_name]
         for key, value in syllabus.items():
             start = get_updated_now_by_given_date(value['baslangic'], '%H:%M')
             finish = get_updated_now_by_given_date(value['bitis'], '%H:%M')

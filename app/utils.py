@@ -85,14 +85,12 @@ def kill_process(processes_to_kill, trigger_process=None):
             process.Terminate()
             killed.append(process.Name)
 
-    if killed:
-        # print('Processes killed: %s' % (', '.join(killed)))
-        pass
-    else:
-        # print('No processes killed.')
-        pass
-
-    return
+    # if killed:
+    #     print('Processes killed: %s' % (', '.join(killed)))
+    #     pass
+    # else:
+    #     print('No processes killed.')
+    #     pass
 
 
 def start_process(processes_to_start):

@@ -19,6 +19,7 @@ class HomeSchool:
     on_lesson_template = Template("${ders} (${hoca}) dersiniz devam ediyor.")
     off_lesson_template = Template("Tenefüs vakti. Sonraki ders ${ders} (${hoca}). ${baslangic}")
     no_lesson_template = Template("Bugün başka dersiniz bulunmamaktadır.")
+    syllabus_lesson_template = Template("${sayi}. [${baslangic} - ${bitis}] ${ders} (${hoca})")
 
     def __init__(self, ders_programi_path, language="tr.UTF-8"):
         """
@@ -31,7 +32,7 @@ class HomeSchool:
         """
         locale.setlocale(locale.LC_ALL, language)
         self.toaster = ToastNotifier()
-        self.executor = ThreadPoolExecutor()
+        # self.executor = ThreadPoolExecutor()
 
         self.interval = 0.5
         self.notification_duration = 30
@@ -41,9 +42,23 @@ class HomeSchool:
         self.last_lesson_time = max([value['bitis'] for key, value in self.ders_programi.items()])
 
         self.last_lesson = {}
-        self.wmi_thread = None
 
         self.set_last_lesson()
+
+        self.show_syllabus()
+
+    def show_syllabus(self):
+        print("Ders programı:")
+        for sayi, lesson in self.ders_programi.items():
+            data = {
+                'sayi': sayi,
+                'baslangic': lesson['baslangic'].strftime('%H:%M'),
+                'bitis': lesson['bitis'].strftime('%H:%M'),
+                'ders': lesson['ders'],
+                'hoca': lesson['hoca'],
+            }
+            print(self.syllabus_lesson_template.substitute(data))
+        print('-'*40)
 
     def get_today_syllabus(self, ders_programi_path):
         syllabus = get_dict_from_json_file(ders_programi_path)[self.today]
@@ -148,8 +163,8 @@ class HomeSchool:
         # we don't use built-in threaded parameter of toaster,
         # because it has protection to multi notification at in the same time
         # thus we create our own thread
-        self.executor.submit(self.toaster._show_toast, title=self.title, msg=toast_messages[msg_type],
-                             duration=self.notification_duration, icon_path=None)
+        self.toaster._show_toast(title=self.title, msg=toast_messages[msg_type],
+                                 duration=self.notification_duration, icon_path=None)
 
     def on_lesson(self):
         """
@@ -163,10 +178,7 @@ class HomeSchool:
             data = {'ders': self.last_lesson['ders'], 'hoca': self.last_lesson['hoca']}
             print(self.on_lesson_template.safe_substitute(data))
 
-        if not self.wmi_thread:
-            self.wmi_thread = self.executor.submit(kill_process, processes_to_kill, trigger_process)
-        elif not self.wmi_thread.running():
-            self.wmi_thread = None
+        kill_process(processes_to_kill, trigger_process)
 
     def off_lesson(self):
         """
